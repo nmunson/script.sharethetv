@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="script.sharethetv"
+       name="sharethetv"
+       version="0.9.0"
+       provider-name="nmunson">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+  </requires>
+  <extension point="xbmc.python.script" library="default.py" />
+  <extension point="xbmc.addon.metadata">
+    <summary lang="en">A tool to share your movie collection online</summary>
+    <description lang="en">This plugin lets you easily share your movie library online. 
+    You can show off your large collection or share the new movies you've just added this week.
+    </description>
+    <disclaimer lang="en">New users are asked to create an account.  This provides you with a URL to
+    share and a way to update your library in the future.  Credentials can be saved.</disclaimer>
+    <platform>all</platform>
+  </extension>
+</addon>
