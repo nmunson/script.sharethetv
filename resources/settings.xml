@@ -7,4 +7,7 @@
    <setting type="lsep" label="30003" />
    <setting id="autorun" type="bool" label="30004" default="true" />
    <setting id="notifications" type="bool" label="30005" default="false" />
+   
+   <setting type="lsep" label="30006" />
+   <setting id="debug" type="bool" label="30007" default="false" />
 </settings> 

@@ -29,6 +29,12 @@ def sendNotice(msg, time):
 	xbmc.executebuiltin('Notification(' + __plugin__ + ',' + msg + ',' + time +',' + __settings__.getAddonInfo("icon") + ')')
 
 
+def debug(message):
+	message = "ShareThe.TV: " + message
+	if (__settings__.getSetting( "debug" ) == 'true'):
+		print message
+
+
 # Query the movie list with JSON
 def getMovieLibrary():
 	query = '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "start": 0, "fields": ["title", "year"] }, "id": "1"}'
@@ -110,7 +116,7 @@ def getMovieCount():
 def autoStart(option):
 	# See if the autoexec.py file exists
 	if (os.path.exists(AUTOEXEC_PATH)):
-		print 'Found autoexec'
+		debug('Found autoexec')
 		
 		# Var to check if we're in autoexec.py
 		found = False
@@ -121,12 +127,12 @@ def autoStart(option):
 		# Check if we're in it
 		for line in filecontents:
 			if line.find('sharethetv') > 0:
-				print 'Found sharethe.tv in autoexec'
+				debug('Found ourselves in autoexec')
 				found = True
 		
 		# If the autoexec.py file is found and we're not in it,
 		if (not found and option):
-			print 'Adding ourselves to autoexec.py'
+			debug('Adding ourselves to autoexec.py')
 			autoexecfile = file(AUTOEXEC_PATH, 'w')
 			filecontents.append(AUTOEXEC_SCRIPT)
 			autoexecfile.writelines(filecontents)            
@@ -134,7 +140,7 @@ def autoStart(option):
 		
 		# Found that we're in it and it's time to remove ourselves
 		if (found and not option):
-			print 'Removing ourselves from autoexec.py'
+			debug('Removing ourselves from autoexec.py')
 			autoexecfile = file(AUTOEXEC_PATH, 'w')
 			for line in filecontents:
 				if not line.find('sharethetv') > 0:
@@ -142,14 +148,14 @@ def autoStart(option):
 			autoexecfile.close()
 	
 	else:
-		print 'autoexec.py doesnt exist'
+		debug('autoexec.py doesnt exist')
 		if (os.path.exists(AUTOEXEC_FOLDER_PATH)):
-			print 'Creating autoexec.py with our autostart script'
+			debug('Creating autoexec.py with our autostart script')
 			autoexecfile = file(AUTOEXEC_PATH, 'w')
 			autoexecfile.write (AUTOEXEC_SCRIPT.strip())
 			autoexecfile.close()
 		else:
-			print 'Scripts folder missing, creating autoexec.py in that new folder with our script'
+			debug('Scripts folder missing, creating autoexec.py in that new folder with our script')
 			os.makedirs(AUTOEXEC_FOLDER_PATH)
 			autoexecfile = file(AUTOEXEC_PATH, 'w')
 			autoexecfile.write (AUTOEXEC_SCRIPT.strip())
@@ -173,7 +179,7 @@ if (__settings__.getSetting( "autorun" ) == 'true' ):
 
 # If triggered from programs menu
 if (not startup):
-	print 'triggered from programs menu, setting autostart and running'
+	debug('Triggered from programs menu, setting autostart option and running once')
 	# Configure autorun from user setting
 	autoStart(autorun)
 	
@@ -186,28 +192,28 @@ oldCount = getMovieCount()
 # Stay in busy loop checking for updates and sending updates when needed
 if autorun:
 	# Busy loop
-	print 'Busy looping to send updates'
+	debug('Waiting to send updates')
 	while 1:
-		print 'Checking for library updates'
+		debug('Checking for library updates')
 		
 		# Get total count of movies
 		newCount = getMovieCount()
 
 		# if the count hasn't changed, wait a bit and check again
 		if oldCount == newCount:
-			print 'No change in movie count'
-			time.sleep(60)
+			debug('No change in movie count')
+			time.sleep(30)
 		else:
 			# Counts are changing, the library is being updated
 			# Let's wait a bit to let the update finish first
 			while (oldCount != newCount):
-				print 'Change in count found, sleep 30s to let update finish'
+				debug('Change in count found, sleep to let update finish')
 				time.sleep(30)
 				oldCount = newCount
 				newCount = getMovieCount()
 			
 			# Ok, the counts have stopped changing. Time to send an update
-			print 'Counts stopped changing, sending update now'
+			debug('Counts stopped changing, sending update now')
 			sendUpdate()
 		
 		# Keep new count as old count for next iteration

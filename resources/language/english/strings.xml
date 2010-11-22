@@ -6,4 +6,8 @@
     <string id="30003">Configuration</string>
     <string id="30004">Autorun</string>
     <string id="30005">Notifications</string>
+    
+   	<string id="30006">Troubleshooting</string>
+    <string id="30007">Debug Mode</string>
+   
 </strings>
