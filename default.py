@@ -13,7 +13,7 @@ __plugin__		= "ShareThe.TV"
 __version__		= "0.9.0"
 __addonID__		= "script.sharethetv"
 __settings__ = xbmcaddon.Addon(__addonID__)
-__apiurl__ = 'http://localhost:3000/api/'
+__apiurl__ = 'http://sharethe.tv/api/'
 
 # Auto exec info
 AUTOEXEC_PATH = xbmc.translatePath( 'special://home/userdata/autoexec.py' )
@@ -99,6 +99,7 @@ def sendUpdate():
 	
 	# Build the movie list in XML format
 	movielist = buildMovieXML(getMovieLibrary())
+	debug('movielist is: ' + movielist)
 	
 	# Add the movie list to a params list that includes username/password
 	params = buildParamsXML(movielist)
@@ -215,6 +216,7 @@ if autorun:
 			# Ok, the counts have stopped changing. Time to send an update
 			debug('Counts stopped changing, sending update now')
 			sendUpdate()
+			time.sleep(30)
 		
 		# Keep new count as old count for next iteration
 		oldCount = newCount
