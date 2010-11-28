@@ -1,2 +1,5 @@
+Version 1.0.0
+		* Updated description, disclaimer
+
 Version 0.9.0
     * Initial working version
