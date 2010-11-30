@@ -10,7 +10,7 @@ from urllib2 import URLError, HTTPError
 
 # Global settings
 __plugin__		= "ShareThe.TV"
-__version__		= "0.9.0"
+__version__		= "1.0.0"
 __addonID__		= "script.sharethetv"
 __settings__ = xbmcaddon.Addon(__addonID__)
 __apiurl__ = 'http://sharethe.tv/api/'
