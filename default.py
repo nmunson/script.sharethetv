@@ -10,10 +10,10 @@ from urllib2 import URLError, HTTPError
 
 # Global settings
 __plugin__		= "ShareThe.TV"
-__version__		= "1.0.0"
+__version__		= "1.0.1"
 __addonID__		= "script.sharethetv"
 __settings__ = xbmcaddon.Addon(__addonID__)
-__apiurl__ = 'http://sharethe.tv/api/'
+__apiurl__ = 'http://localhost:3000/api/'
 
 # Auto exec info
 AUTOEXEC_PATH = xbmc.translatePath( 'special://home/userdata/autoexec.py' )
@@ -83,8 +83,8 @@ def sendRequest(params):
 			# Always show error messages, wrong user/pass combo
 			sendNotice("Authentication failed.", "5000")
 		elif e.code == 403:
-			# Refusing to service request because of outdated plugin
-			sendNotice("Please update your plugin before submitting.", "7000")
+			# Refusing to service request because of an empty library
+			sendNotice("Empty movie library, not sending update.", "7000")
 		else:
 			# Unhandled error, maybe all should be handled here
 			sendNotice("Unexpected error.", "5000")
