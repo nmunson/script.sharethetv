@@ -84,7 +84,7 @@ def sendRequest(params):
 			sendNotice("Authentication failed.", "5000")
 		elif e.code == 403:
 			# Refusing to service request because of an empty library
-			sendNotice("Empty movie library, not sending update.", "7000")
+			sendNotice("Empty movie library so not sending update.", "7000")
 		else:
 			# Unhandled error, maybe all should be handled here
 			sendNotice("Unexpected error.", "5000")
