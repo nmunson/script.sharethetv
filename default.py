@@ -13,7 +13,7 @@ __plugin__		= "ShareThe.TV"
 __version__		= "1.0.1"
 __addonID__		= "script.sharethetv"
 __settings__ = xbmcaddon.Addon(__addonID__)
-__apiurl__ = 'http://localhost:3000/api/'
+__apiurl__ = 'http://sharethe.tv/api/'
 
 # Auto exec info
 AUTOEXEC_PATH = xbmc.translatePath( 'special://home/userdata/autoexec.py' )
