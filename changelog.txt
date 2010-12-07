@@ -1,3 +1,6 @@
+Version 1.0.2
+		* Display message if unable to contact server rather than crashing
+
 Version 1.0.1
 		* Update denied if user has an empty movie library
 

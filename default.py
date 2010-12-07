@@ -6,11 +6,10 @@ import urllib2
 import re
 import os
 import time
-from urllib2 import URLError, HTTPError
 
 # Global settings
 __plugin__		= "ShareThe.TV"
-__version__		= "1.0.1"
+__version__		= "1.0.2"
 __addonID__		= "script.sharethetv"
 __settings__ = xbmcaddon.Addon(__addonID__)
 __apiurl__ = 'http://sharethe.tv/api/'
@@ -70,24 +69,24 @@ def sendRequest(params):
 	req = urllib2.Request(url=__apiurl__, data=params, headers={'Content-Type': 'application/xml'})
 	try:
 		response = urllib2.urlopen(req)
-	# Handle connection refused?
-	#except HTTPError, e:
-		#sendNotice("Error contacting server, try again soon.", "7000")
-	except URLError, e:
+	except urllib2.URLError, e:
 		# Success code
-		if e.code == 202:
-			# Only show notifications if they are enabled in settings
-			if (__settings__.getSetting( "notifications" ) == 'true'):
-				sendNotice("Library update sent.", "5000")
-		elif e.code == 401:
-			# Always show error messages, wrong user/pass combo
-			sendNotice("Authentication failed.", "5000")
-		elif e.code == 403:
-			# Refusing to service request because of an empty library
-			sendNotice("Empty movie library so not sending update.", "7000")
-		else:
-			# Unhandled error, maybe all should be handled here
-			sendNotice("Unexpected error.", "5000")
+		try:
+			if e.code == 202:
+				# Only show notifications if they are enabled in settings
+				if (__settings__.getSetting( "notifications" ) == 'true'):
+					sendNotice("Library update sent.", "5000")
+			elif e.code == 401:
+				# Always show error messages, wrong user/pass combo
+				sendNotice("Authentication failed.", "5000")
+			elif e.code == 403:
+				# Refusing to service request because of an empty library
+				sendNotice("Empty movie library so not sending update.", "7000")
+			else:
+				# Unhandled error, maybe all should be handled here
+				sendNotice("Unexpected error.", "5000")
+		except AttributeError:
+			sendNotice("Unable to contact server but try again soon.", "5000")
 
 
 # Send a library update to ShareThe.TV
