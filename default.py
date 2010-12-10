@@ -57,6 +57,7 @@ def buildMovieXML(response):
 # Build out parameters list including user/pass, and movie list
 def buildParamsXML(movielist):
 	params = "<user>"
+	params += "<version>" + __version__ + "</version>"
 	params += "<email>" + __settings__.getSetting("email") + "</email>"
 	params += "<password>" + __settings__.getSetting("password") + "</password>"
 	params += movielist
@@ -188,6 +189,7 @@ if (not startup):
 	
 
 oldCount = getMovieCount()
+timeDelay = 60
 
 # Stay in busy loop checking for updates and sending updates when needed
 if autorun:
@@ -202,20 +204,20 @@ if autorun:
 		# if the count hasn't changed, wait a bit and check again
 		if oldCount == newCount:
 			debug('No change in movie count')
-			time.sleep(30)
+			time.sleep(timeDelay)
 		else:
 			# Counts are changing, the library is being updated
 			# Let's wait a bit to let the update finish first
 			while (oldCount != newCount):
 				debug('Change in count found, sleep to let update finish')
-				time.sleep(30)
+				time.sleep(timeDelay)
 				oldCount = newCount
 				newCount = getMovieCount()
 			
 			# Ok, the counts have stopped changing. Time to send an update
 			debug('Counts stopped changing, sending update now')
 			sendUpdate()
-			time.sleep(30)
+			time.sleep(timeDelay)
 		
 		# Keep new count as old count for next iteration
 		oldCount = newCount
