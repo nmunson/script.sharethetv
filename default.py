@@ -71,42 +71,32 @@ def sendRequest(params):
 	try:
 		response = urllib2.urlopen(req)
 	except urllib2.URLError, e:
-		# Success code
 		try:
 			if e.code == 202:
-				# Only show notifications if they are enabled in settings
 				if (__settings__.getSetting( "notifications" ) == 'true'):
 					sendNotice("Library update sent.", "5000")
 			elif e.code == 401:
-				# Always show error messages, wrong user/pass combo
 				sendNotice("Authentication failed.", "5000")
 			elif e.code == 403:
-				# Refusing to service request because of an empty library
 				sendNotice("Empty movie library so not sending update.", "7000")
 			else:
-				# Unhandled error, maybe all should be handled here
 				sendNotice("Unexpected error.", "5000")
 		except AttributeError:
 			sendNotice("Unable to contact server but try again soon.", "5000")
 
 
-# Send a library update to ShareThe.TV
 def sendUpdate():
-	# Verify username/password entered in settings before continuing
 	if (__settings__.getSetting( "email" ) == '' or __settings__.getSetting( "password" ) == ''):
 		sendNotice("Configure your account details before submitting.", "6000")
 		return
 	
-	# Build the movie list in XML format
 	movielist = buildMovieXML(getMovieLibrary())
 	debug('movielist is: ' + movielist)
 	
-	# Add the movie list to a params list that includes username/password
 	params = buildParamsXML(movielist)
 	
 	sendRequest(params)
 
-# Get the count of movies in the library
 def getMovieCount():
 	query = '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "id": "1"}'
 	result = xbmc.executeJSONRPC(query)
@@ -162,7 +152,6 @@ def autoStart(option):
 			autoexecfile.write (AUTOEXEC_SCRIPT.strip())
 			autoexecfile.close()
 
-# Check if we are executing from startup
 startup = False
 
 try:
@@ -181,44 +170,34 @@ if (__settings__.getSetting( "autorun" ) == 'true' ):
 # If triggered from programs menu
 if (not startup):
 	debug('Triggered from programs menu, setting autostart option and running once')
-	# Configure autorun from user setting
 	autoStart(autorun)
-	
-	# Trigger an update
 	sendUpdate()
-	
+
 
 oldCount = getMovieCount()
 timeDelay = 60
 
-# Stay in busy loop checking for updates and sending updates when needed
 if autorun:
-	# Busy loop
 	debug('Waiting to send updates')
 	while 1:
 		debug('Checking for library updates')
 		
-		# Get total count of movies
 		newCount = getMovieCount()
-
-		# if the count hasn't changed, wait a bit and check again
+		
 		if oldCount == newCount:
 			debug('No change in movie count')
 			time.sleep(timeDelay)
 		else:
-			# Counts are changing, the library is being updated
-			# Let's wait a bit to let the update finish first
+			
 			while (oldCount != newCount):
 				debug('Change in count found, sleep to let update finish')
 				time.sleep(timeDelay)
 				oldCount = newCount
 				newCount = getMovieCount()
 			
-			# Ok, the counts have stopped changing. Time to send an update
 			debug('Counts stopped changing, sending update now')
 			sendUpdate()
 			time.sleep(timeDelay)
 		
-		# Keep new count as old count for next iteration
 		oldCount = newCount
 
