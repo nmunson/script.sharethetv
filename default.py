@@ -6,10 +6,11 @@ import urllib2
 import re
 import os
 import time
+import cgi
 
 # Global settings
 __plugin__		= "ShareThe.TV"
-__version__		= "1.0.2"
+__version__		= "1.0.5"
 __addonID__		= "script.sharethetv"
 __settings__ = xbmcaddon.Addon(__addonID__)
 __apiurl__ = 'http://sharethe.tv/api/'
@@ -34,20 +35,22 @@ def debug(message):
 		print message
 
 
-# Query the movie list with JSON
+# Query the movie list
 def getMovieLibrary():
-	query = '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "params": { "start": 0, "fields": ["title", "year"] }, "id": "1"}'
-	return xbmc.executeJSONRPC(query)
+	# imdb, title, year
+	query = "SELECT movie.c09, movie.c00, movie.c07 FROM movie"
+	return xbmc.executehttpapi("QueryVideoDatabase(%s)" % urllib.quote_plus(query))
 
 
 # Build out movie XML based on getMovieLibrary() call.  Watch for special chars in title
 def buildMovieXML(response):
-	match = re.compile('"title" : "(.+?)",\n.+?"year" : (.+?)\n').findall(response)
-
+	match = re.compile('<field>(.+?)</field><field>(.+?)</field><field>(.+?)</field>').findall(response)
+	
 	movielist = "<movies>"
-	for title, year in match:
+	for imdb, title, year in match:
 		movielist += "<movie>"
-		movielist += "<title>" + title.replace('&','&amp;') + "</title>"
+		movielist += "<imdb>" + imdb + "</imdb>"
+		movielist += "<title>" + cgi.escape(title) + "</title>"
 		movielist += "<year>" + year + "</year>"
 		movielist += "</movie>"
 	movielist += "</movies>"
@@ -75,10 +78,12 @@ def sendRequest(params):
 			if e.code == 202:
 				if (__settings__.getSetting( "notifications" ) == 'true'):
 					sendNotice("Library update sent.", "5000")
+			elif e.code == 204:
+				sendNotice("Empty movie library so not sending update.", "7000")
 			elif e.code == 401:
 				sendNotice("Authentication failed.", "5000")
 			elif e.code == 403:
-				sendNotice("Empty movie library so not sending update.", "7000")
+				sendNotice("Please update your addon before submitting.", "7000")
 			else:
 				sendNotice("Unexpected error.", "5000")
 		except AttributeError:
