@@ -44,7 +44,7 @@ def getMovieLibrary():
 
 # Build out movie XML based on getMovieLibrary() call.  Watch for special chars in title
 def buildMovieXML(response):
-	match = re.compile('<field>(.+?)</field><field>(.+?)</field><field>(.+?)</field>').findall(response)
+	match = re.compile('<field>(.*?)</field><field>(.*?)</field><field>(.*?)</field>').findall(response)
 	
 	movielist = "<movies>"
 	for imdb, title, year in match:
