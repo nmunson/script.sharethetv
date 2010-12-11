@@ -1,3 +1,6 @@
+Version 1.0.5
+		* Send imdb id of each movie to improve results
+
 Version 1.0.2
 		* Display message if unable to contact server rather than crashing
 
