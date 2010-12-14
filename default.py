@@ -7,6 +7,7 @@ import re
 import os
 import time
 import cgi
+import sys
 
 # Global settings
 __plugin__		= "ShareThe.TV"
@@ -109,6 +110,13 @@ def getMovieCount():
 	return match[0]
 
 
+def waiter(seconds):
+	for i in range(1, seconds):
+		time.sleep(1)
+		if xbmc.abortRequested == True:
+			sys.exit()
+
+
 def autoStart(option):
 	# See if the autoexec.py file exists
 	if (os.path.exists(AUTOEXEC_PATH)):
@@ -191,18 +199,18 @@ if autorun:
 		
 		if oldCount == newCount:
 			debug('No change in movie count')
-			time.sleep(timeDelay)
+			waiter(timeDelay)
 		else:
 			
 			while (oldCount != newCount):
 				debug('Change in count found, sleep to let update finish')
-				time.sleep(timeDelay)
+				waiter(timeDelay)
 				oldCount = newCount
 				newCount = getMovieCount()
 			
 			debug('Counts stopped changing, sending update now')
 			sendUpdate()
-			time.sleep(timeDelay)
+			waiter(timeDelay)
 		
 		oldCount = newCount
 
