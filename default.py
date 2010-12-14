@@ -11,7 +11,7 @@ import sys
 
 # Global settings
 __plugin__		= "ShareThe.TV"
-__version__		= "1.0.5"
+__version__		= "1.0.6"
 __addonID__		= "script.sharethetv"
 __settings__ = xbmcaddon.Addon(__addonID__)
 __apiurl__ = 'http://sharethe.tv/api/'

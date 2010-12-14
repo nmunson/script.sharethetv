@@ -1,3 +1,6 @@
+Version 1.0.6
+		* Fixed bug related to slow shutdowns when autorun enabled
+
 Version 1.0.5
 		* Send imdb id of each movie to improve results
 
