@@ -104,10 +104,11 @@ def sendUpdate():
 	sendRequest(params)
 
 def getMovieCount():
-	query = '{"jsonrpc": "2.0", "method": "VideoLibrary.GetMovies", "id": "1"}'
-	result = xbmc.executeJSONRPC(query)
-	match = re.compile('"end" : (.+?),').findall(result)
-	return match[0]
+	query = "SELECT movie.c00 FROM movie"
+	queryResult = xbmc.executehttpapi("QueryVideoDatabase(%s)" % urllib.quote_plus(query))
+	count = str(queryResult.count("<field>"))
+	debug("Movie count: " + count)
+	return count
 
 
 def waiter(seconds):
@@ -188,7 +189,8 @@ if (not startup):
 
 
 oldCount = getMovieCount()
-timeDelay = 60
+intervalDelay = 300
+updateDelay = 60
 
 if autorun:
 	debug('Waiting to send updates')
@@ -199,18 +201,18 @@ if autorun:
 		
 		if oldCount == newCount:
 			debug('No change in movie count')
-			waiter(timeDelay)
+			waiter(intervalDelay)
 		else:
 			
 			while (oldCount != newCount):
 				debug('Change in count found, sleep to let update finish')
-				waiter(timeDelay)
+				waiter(updateDelay)
 				oldCount = newCount
 				newCount = getMovieCount()
 			
 			debug('Counts stopped changing, sending update now')
 			sendUpdate()
-			waiter(timeDelay)
+			waiter(intervalDelay)
 		
 		oldCount = newCount
 
