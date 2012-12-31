@@ -12,7 +12,7 @@ import json
 
 # Global settings
 __plugin__		= "ShareThe.TV"
-__version__		= "2.0.0"
+__version__		= "2.0.1"
 __addonID__		= "script.sharethetv"
 __settings__ = xbmcaddon.Addon(__addonID__)
 __apiurl__ = 'http://sharethe.tv/api/'

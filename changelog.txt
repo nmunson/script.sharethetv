@@ -1,3 +1,9 @@
+Version 2.0.1
+		* Remove unused settings
+
+Version 2.0.0
+		* Frodo compatibility.  Only manually triggered updates are supported in this version, no background updates.
+
 Version 1.1.0
 		* Leaving XBMC running for long periods of time would slow down system.  Method of checking the movie count has changed to fix this.
 
