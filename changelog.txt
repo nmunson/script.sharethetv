@@ -1,3 +1,6 @@
+Version 2.0.4
+    * Add dialog progress window for library updates
+
 Version 2.0.3
     * Fix XBMC python version and missing tag in addon.xml
 
