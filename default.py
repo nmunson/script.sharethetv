@@ -106,13 +106,18 @@ def sendUpdate():
 	if (__settings__.getSetting("email") == '' or __settings__.getSetting("password") == ''):
 		sendNotice("Configure your account details before submitting.", "6000")
 		return
-	
+
+	progress = xbmcgui.DialogProgress()
+	progress.create('Updating', 'Building list of local movies')
+
 	movielist = buildMovieXML(getMovieLibrary())
 	debug('Movielist is: ' + movielist)
-	
+
 	params = buildParamsXML(movielist)
 	
+	progress.update(50, 'Sending movie update to server')
 	sendRequest(params)
+	progress.close()
 
 
 # Main execution path
