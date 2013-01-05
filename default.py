@@ -22,7 +22,7 @@ print "[ADDON] '%s: version %s' initialized!" % (__plugin__, __version__)
 
 
 # Send a notice.  Specify message and duration.
-def sendNotice(msg, time):
+def sendNotice(msg, time="5000"):
 	xbmc.executebuiltin('Notification(' + __plugin__ + ',' + msg + ',' + time +',' + __settings__.getAddonInfo("icon") + ')')
 
 
@@ -42,6 +42,7 @@ def getMovieLibrary():
 	try:
 		error = result['error']
 		debug("getMovieLibrary: " + str(error))
+		sendNotice("Unable to retrieve list of movies from XBMC")
 		return None
 	except KeyError:
 		pass
@@ -49,7 +50,11 @@ def getMovieLibrary():
 	try:
 		return result['result']['movies']
 	except KeyError:
-		debug("getMovieLibrary: KeyError: result['result']['movies']")
+		debug("getMovieLibrary: KeyError")
+		if (result['result']['limits']['total'] == 0):
+			sendNotice("You have no movies to sync")
+		else:
+			sendNotice("Unable to retrieve list of movies from XBMC")
 		return None
 
 
@@ -84,38 +89,34 @@ def sendRequest(params):
 	req = urllib2.Request(url=__apiurl__, data=params, headers={'Content-Type': 'application/xml'})
 	try:
 		response = urllib2.urlopen(req)
-		sendNotice("Library update sent", "5000")
+		sendNotice("Library update sent")
+	except urllib2.HTTPError, e:
+		if e.code == 401:
+			sendNotice("Authentication failed")
+		elif e.code == 403:
+			sendNotice("You must update your addon before syncing")
 	except urllib2.URLError, e:
-		try:
-			if e.code == 202:
-				if (__settings__.getSetting( "notifications" ) == 'true'):
-					sendNotice("Library update sent.", "5000")
-			elif e.code == 204:
-				sendNotice("Empty movie library so not sending update.", "7000")
-			elif e.code == 401:
-				sendNotice("Authentication failed.", "5000")
-			elif e.code == 403:
-				sendNotice("Please update your addon before submitting.", "7000")
-			else:
-				sendNotice("Unexpected error.", "5000")
-		except AttributeError:
-			sendNotice("Unable to contact server, but try again soon.", "5000")
+		sendNotice("Service unavailable or no internet connection found")
 
 
 def sendUpdate():
 	if (__settings__.getSetting("email") == '' or __settings__.getSetting("password") == ''):
-		sendNotice("Configure your account details before submitting.", "6000")
+		sendNotice("Configure your account details before submitting")
 		return
 
 	progress = xbmcgui.DialogProgress()
 	progress.create('Updating', 'Building list of local movies')
 
-	movielist = buildMovieXML(getMovieLibrary())
+	library = getMovieLibrary()
+	if (library == None):
+		return
+
+	movielist = buildMovieXML(library)
 	debug('Movielist is: ' + movielist)
 
 	params = buildParamsXML(movielist)
 	
-	progress.update(50, 'Sending movie update to server')
+	progress.update(50, 'Syncing movie list')
 	sendRequest(params)
 	progress.close()
 
