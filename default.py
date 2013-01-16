@@ -15,6 +15,7 @@ __plugin__		= "ShareThe.TV"
 __version__		= "2.0.5"
 __addonID__		= "script.sharethetv"
 __settings__ = xbmcaddon.Addon(__addonID__)
+__language__ = __settings__.getLocalizedString
 __apiurl__ = 'http://sharethe.tv/api/'
 
 # Debugging info
@@ -42,7 +43,7 @@ def getMovieLibrary():
 	try:
 		error = result['error']
 		debug("getMovieLibrary: " + str(error))
-		sendNotice("Unable to retrieve list of movies from XBMC")
+		sendNotice(__language__(30028))
 		return None
 	except KeyError:
 		pass
@@ -52,9 +53,9 @@ def getMovieLibrary():
 	except KeyError:
 		debug("getMovieLibrary: KeyError")
 		if (result['result']['limits']['total'] == 0):
-			sendNotice("You have no movies to sync")
+			sendNotice(__language__(30029))
 		else:
-			sendNotice("Unable to retrieve list of movies from XBMC")
+			sendNotice(__language__(30028))
 		return None
 
 
@@ -89,23 +90,23 @@ def sendRequest(params):
 	req = urllib2.Request(url=__apiurl__, data=params, headers={'Content-Type': 'application/xml'})
 	try:
 		response = urllib2.urlopen(req)
-		sendNotice("Library update sent")
+		sendNotice(__language__(30020))
 	except urllib2.HTTPError, e:
 		if e.code == 401:
-			sendNotice("Authentication failed")
+			sendNotice(__language__(30021))
 		elif e.code == 403:
-			sendNotice("You must update your addon before syncing")
+			sendNotice(__language__(30022))
 	except urllib2.URLError, e:
-		sendNotice("Service unavailable or no internet connection found")
+		sendNotice(__language__(30023))
 
 
 def sendUpdate():
 	if (__settings__.getSetting("email") == '' or __settings__.getSetting("password") == ''):
-		sendNotice("Configure your account details before submitting")
+		sendNotice(__language__(30024))
 		return
 
 	progress = xbmcgui.DialogProgress()
-	progress.create('Updating', 'Building list of local movies')
+	progress.create(__language__(30025), __language__(30026))
 
 	library = getMovieLibrary()
 	if (library == None):
@@ -116,7 +117,7 @@ def sendUpdate():
 
 	params = buildParamsXML(movielist)
 	
-	progress.update(50, 'Syncing movie list')
+	progress.update(50, __language__(30027))
 	sendRequest(params)
 	progress.close()
 
