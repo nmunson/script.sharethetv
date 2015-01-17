@@ -12,7 +12,7 @@ import json
 
 # Global settings
 __plugin__		= "ShareThe.TV"
-__version__		= "2.0.6"
+__version__		= "2.0.7"
 __addonID__		= "script.sharethetv"
 __settings__ = xbmcaddon.Addon(__addonID__)
 __language__ = __settings__.getLocalizedString
