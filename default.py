@@ -16,7 +16,7 @@ __version__		= "2.0.6"
 __addonID__		= "script.sharethetv"
 __settings__ = xbmcaddon.Addon(__addonID__)
 __language__ = __settings__.getLocalizedString
-__apiurl__ = 'http://sharethe.tv/api/'
+__apiurl__ = 'http://www.sharethe.tv/api/'
 
 # Debugging info
 print "[ADDON] '%s: version %s' initialized!" % (__plugin__, __version__)
